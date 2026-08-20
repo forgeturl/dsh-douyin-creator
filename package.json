@@ -1,0 +1,46 @@
+{
+  "name": "dsh-douyin-creator",
+  "version": "0.1.0",
+  "description": "DeepSeek Harness plugin for evidence-backed Douyin creator workflows",
+  "type": "module",
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js"
+  },
+  "files": [
+    "index.js",
+    "lib/",
+    "data/",
+    "skills/",
+    "evals/",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE",
+    "NOTICE.md"
+  ],
+  "scripts": {
+    "test": "node --test && node scripts/validate-package.mjs",
+    "pack:check": "npm --cache ./.npm-cache pack --dry-run"
+  },
+  "keywords": [
+    "deepseek-harness",
+    "dsh-plugin",
+    "douyin",
+    "creator",
+    "official-sources",
+    "agent-skill"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.0-rc.7 || ^4.0.1-rc.1",
+    "@deepseek-ai/dsh-tools": "^0.0.1-rc.1 || ^0.1.0-rc.6"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}

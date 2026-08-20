@@ -1,0 +1,19 @@
+{
+  "built_at": "2026-08-21T00:42:55+0800",
+  "knowledge_units": 73,
+  "web_documents": 50,
+  "video_transcripts": 21,
+  "knowledge_chunks": 231,
+  "total_text_chars": 245124,
+  "by_category": {
+    "00_transparency_reports": 8,
+    "01_recommendation_core": 11,
+    "02_distribution_growth": 13,
+    "03_search_hot_local": 3,
+    "04_commerce_live": 4,
+    "05_governance_eligibility": 21,
+    "06_user_controls_privacy": 6,
+    "07_legal_filings": 4,
+    "08_technical_models": 3
+  }
+}

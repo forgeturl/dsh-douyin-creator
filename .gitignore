@@ -1,0 +1,24 @@
+node_modules/
+*.tgz
+.DS_Store
+.dsh/
+.npm-cache/
+
+# This public bundle is intentionally text-only.
+*.mp4
+*.mov
+*.mkv
+*.avi
+*.webm
+*.mp3
+*.wav
+*.m4a
+*.aac
+*.flac
+*.gif
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.svg
+*.pdf
