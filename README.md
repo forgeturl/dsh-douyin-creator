@@ -1,5 +1,7 @@
 # dsh-douyin-creator
 
+Evidence-backed Douyin creator workflows for DeepSeek Harness
+
 一个面向 DeepSeek Harness 的抖音自媒体证据插件：先检索抖音官方公开材料，再做选题、脚本审查、数据诊断和周计划。
 
 它不是“爆款公式库”，也不承诺流量、涨粉或收益。公开包只包含文字索引、检索工具、Skill 和评测，不包含原始视频、音频、图片、GIF 或 PDF。
