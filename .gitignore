@@ -22,3 +22,7 @@ node_modules/
 *.webp
 *.svg
 *.pdf
+
+# README visuals are allowed only as tightly bounded SVG/WebP files.
+!docs/images/*.svg
+!docs/images/*.webp

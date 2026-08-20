@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">dsh-douyin-creator：先查官方资料，再做抖音内容</title>
+  <desc id="desc">从创作者问题出发，检索抖音官方资料，生成分层、有证据、可复盘的运营建议。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#071426"/>
+      <stop offset="0.55" stop-color="#0b2445"/>
+      <stop offset="1" stop-color="#102f59"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#31d6c4"/>
+      <stop offset="1" stop-color="#69a7ff"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="18" flood-color="#000814" flood-opacity="0.38"/>
+    </filter>
+    <style>
+      .text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; }
+      .muted { fill: #9eb6d1; }
+      .card-title { fill: #f5fbff; font-size: 25px; font-weight: 700; }
+      .card-copy { fill: #aec4dc; font-size: 17px; }
+    </style>
+  </defs>
+  <rect width="1200" height="630" rx="28" fill="url(#bg)"/>
+  <circle cx="1060" cy="90" r="210" fill="#2e75ff" opacity="0.09"/>
+  <circle cx="120" cy="590" r="250" fill="#16cbb5" opacity="0.07"/>
+  <g class="text">
+    <rect x="64" y="54" width="238" height="40" rx="20" fill="#122f50" stroke="#2f6da0"/>
+    <circle cx="88" cy="74" r="7" fill="#31d6c4"/>
+    <text x="105" y="81" fill="#cce4f7" font-size="17" font-weight="650">dsh-douyin-creator</text>
+
+    <text x="64" y="160" fill="#f7fbff" font-size="53" font-weight="800">先查官方资料，再做抖音内容</text>
+    <text x="64" y="207" class="muted" font-size="23">选题评估 · 脚本审查 · 数据诊断 · 内容周计划</text>
+    <rect x="64" y="242" width="590" height="5" rx="2.5" fill="url(#accent)"/>
+
+    <g filter="url(#shadow)">
+      <rect x="64" y="306" width="310" height="192" rx="22" fill="#0f2947" stroke="#244f75"/>
+      <rect x="445" y="306" width="310" height="192" rx="22" fill="#0f2947" stroke="#2c668c"/>
+      <rect x="826" y="306" width="310" height="192" rx="22" fill="#0f2947" stroke="#356e9b"/>
+    </g>
+
+    <circle cx="105" cy="349" r="20" fill="#173c61"/>
+    <text x="99" y="357" fill="#58dccd" font-size="22" font-weight="800">1</text>
+    <text x="139" y="358" class="card-title">提出创作问题</text>
+    <text x="92" y="405" class="card-copy">“2 秒跳出率 60% 合格吗？”</text>
+    <text x="92" y="438" class="card-copy">“这个选题值得做吗？”</text>
+    <text x="92" y="471" class="card-copy">“为什么作品没有流量？”</text>
+
+    <circle cx="486" cy="349" r="20" fill="#173c61"/>
+    <text x="480" y="357" fill="#58dccd" font-size="22" font-weight="800">2</text>
+    <text x="520" y="358" class="card-title">检索官方证据</text>
+    <text x="473" y="405" class="card-copy">73 条知识单元 · 231 个切片</text>
+    <text x="473" y="438" class="card-copy">资料 ID · 发布时间 · 官方链接</text>
+    <text x="473" y="471" class="card-copy">推荐 · 搜索 · 治理 · 技术</text>
+
+    <circle cx="867" cy="349" r="20" fill="#173c61"/>
+    <text x="861" y="357" fill="#58dccd" font-size="22" font-weight="800">3</text>
+    <text x="901" y="358" class="card-title">形成可执行结论</text>
+    <text x="854" y="405" class="card-copy">官方公开 / 合理推断</text>
+    <text x="854" y="438" class="card-copy">运营建议 / 账号结论</text>
+    <text x="854" y="471" class="card-copy">实验动作 · 指标 · 停止条件</text>
+
+    <path d="M390 402H426" stroke="#58dccd" stroke-width="3" stroke-linecap="round"/>
+    <path d="M417 394L427 402L417 410" fill="none" stroke="#58dccd" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M771 402H807" stroke="#58dccd" stroke-width="3" stroke-linecap="round"/>
+    <path d="M798 394L808 402L798 410" fill="none" stroke="#58dccd" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <rect x="64" y="540" width="420" height="48" rx="24" fill="#102f4e" stroke="#2d698f"/>
+    <text x="88" y="571" fill="#d8eaf8" font-size="18" font-weight="650">维护者实践：《商道人物志》接近 6 万粉丝</text>
+    <text x="1136" y="570" text-anchor="end" class="muted" font-size="16">DeepSeek Harness 插件</text>
+  </g>
+</svg>

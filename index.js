@@ -1,7 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { defineTool } from '@deepseek-ai/dsh-tools';
-import { searchArchive } from './lib/search.js';
+import { renderSearchResult, searchArchive } from './lib/search.js';
 
 export const name = 'dsh-douyin-creator';
 export const inject = ['tools', 'skills'];
@@ -29,6 +28,31 @@ const SKILLS = [
   },
 ];
 
+const SOURCE_KINDS = ['official_web', 'official_video_transcript', 'official_pdf_attachment'];
+const SEARCH_ARG_KEYS = new Set(['query', 'limit', 'category', 'sourceKind']);
+
+function validateSearchArgs(args) {
+  if (!args || typeof args !== 'object' || Array.isArray(args)) {
+    throw new TypeError('参数必须是对象');
+  }
+  for (const key of Object.keys(args)) {
+    if (!SEARCH_ARG_KEYS.has(key)) throw new TypeError(`不支持的参数：${key}`);
+  }
+  if (typeof args.query !== 'string' || !args.query.trim()) {
+    throw new TypeError('query 必须是非空字符串');
+  }
+  if (args.limit !== undefined && (!Number.isInteger(args.limit) || args.limit < 1 || args.limit > 10)) {
+    throw new TypeError('limit 必须是 1 到 10 的整数');
+  }
+  if (args.category !== undefined && typeof args.category !== 'string') {
+    throw new TypeError('category 必须是字符串');
+  }
+  if (args.sourceKind !== undefined && !SOURCE_KINDS.includes(args.sourceKind)) {
+    throw new TypeError(`sourceKind 必须是：${SOURCE_KINDS.join('、')}`);
+  }
+  return args;
+}
+
 function skillContent(name) {
   const url = new URL(`./skills/${name}/SKILL.md`, import.meta.url);
   const raw = readFileSync(url, 'utf8');
@@ -51,30 +75,35 @@ function registerSkills(ctx) {
 }
 
 export async function apply(ctx) {
-  ctx.tools.register(defineTool({
+  ctx.tools.register({
     name: 'douyin_official_search',
     description: '检索抖音官方公开资料文字快照。用于回答推荐、分发、搜索、治理、隐私和技术机制问题；不提供爆款保证。',
     parameters: {
-      query: {
-        type: 'string',
-        description: '检索词，例如“多目标推荐 内容质量”或“搜索 用户需求”。',
-        required: true,
+      type: 'object',
+      properties: {
+        query: {
+          type: 'string',
+          minLength: 1,
+          description: '检索词，例如“多目标推荐 内容质量”或“搜索 用户需求”。',
+        },
+        limit: {
+          type: 'number',
+          minimum: 1,
+          maximum: 10,
+          description: '返回资料数量，1 到 10，默认 5。',
+        },
+        category: {
+          type: 'string',
+          description: '可选的精确分类，例如 01_recommendation_core。',
+        },
+        sourceKind: {
+          type: 'string',
+          enum: SOURCE_KINDS,
+          description: '可选的精确资料类型。',
+        },
       },
-      limit: {
-        type: 'number',
-        description: '返回资料数量，1 到 10，默认 5。',
-        required: false,
-      },
-      category: {
-        type: 'string',
-        description: '可选的精确分类，例如 01_recommendation_core。',
-        required: false,
-      },
-      sourceKind: {
-        type: 'string',
-        description: '可选的精确资料类型：official_web 或 official_video。',
-        required: false,
-      },
+      required: ['query'],
+      additionalProperties: false,
     },
     output: {
       schema: {
@@ -84,14 +113,17 @@ export async function apply(ctx) {
       render(_args, value) {
         return [{
           type: 'text',
-          text: JSON.stringify(value, null, 2),
+          text: renderSearchResult(value),
         }];
       },
     },
     async execute(args) {
-      return searchArchive(args);
+      return searchArchive(validateSearchArgs(args));
     },
-  }));
+    isConcurrencySafe() {
+      return true;
+    },
+  });
 
   registerSkills(ctx);
 }

@@ -4,11 +4,15 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const forbiddenExtensions = new Set([
+const mediaExtensions = new Set([
   '.mp4', '.mov', '.mkv', '.avi', '.webm',
   '.mp3', '.wav', '.m4a', '.aac', '.flac',
   '.gif', '.png', '.jpg', '.jpeg', '.webp', '.svg', '.pdf',
 ]);
+const allowedReadmeMediaExtensions = new Set(['.svg', '.webp']);
+const readmeMediaRoot = path.join(root, 'docs', 'images');
+const maxReadmeMediaFileBytes = 300 * 1024;
+const maxReadmeMediaTotalBytes = 600 * 1024;
 
 async function walk(directory) {
   const files = [];
@@ -27,8 +31,20 @@ async function readJsonLines(relativePath) {
 }
 
 const files = await walk(root);
-const forbidden = files.filter((file) => forbiddenExtensions.has(path.extname(file).toLowerCase()));
-assert.deepEqual(forbidden, [], `媒体文件不得进入公开包：${forbidden.join(', ')}`);
+const mediaFiles = files.filter((file) => mediaExtensions.has(path.extname(file).toLowerCase()));
+const invalidMedia = mediaFiles.filter((file) => {
+  const extension = path.extname(file).toLowerCase();
+  return path.dirname(file) !== readmeMediaRoot || !allowedReadmeMediaExtensions.has(extension);
+});
+assert.deepEqual(invalidMedia, [], `只允许 docs/images 下受控的 SVG/WebP：${invalidMedia.join(', ')}`);
+
+let readmeMediaBytes = 0;
+for (const file of mediaFiles) {
+  const bytes = (await stat(file)).size;
+  assert.ok(bytes <= maxReadmeMediaFileBytes, `README 单个媒体超过 300 KiB：${file} (${bytes} bytes)`);
+  readmeMediaBytes += bytes;
+}
+assert.ok(readmeMediaBytes <= maxReadmeMediaTotalBytes, `README 媒体总量超过 600 KiB：${readmeMediaBytes} bytes`);
 
 let totalBytes = 0;
 for (const file of files) totalBytes += (await stat(file)).size;
@@ -50,6 +66,19 @@ assert.ok(units.every((unit) => /^https:\/\//u.test(unit.source_url)), '每个�
 const packageJson = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8'));
 assert.equal(packageJson.dsh?.bundle?.patch, './cordis.patch.yml');
 assert.equal(packageJson.main, './index.js');
+assert.equal(packageJson.engines?.node, '^22.19.0 || >=24.0.0');
+assert.equal(packageJson.repository?.url, 'git+https://github.com/forgeturl/dsh-douyin-creator.git');
+assert.equal(packageJson.publishConfig?.access, 'public');
+assert.equal(packageJson.dependencies, undefined, '插件运行时应保持零第三方依赖');
+assert.equal(packageJson.peerDependencies, undefined, '插件不应要求用户额外安装 peer 依赖');
+assert.ok(packageJson.files.every((entry) => !entry.startsWith('docs')), 'npm files 不得包含 README 图片目录');
+
+const [readmeZh, readmeEn] = await Promise.all([
+  readFile(path.join(root, 'README.md'), 'utf8'),
+  readFile(path.join(root, 'README.en.md'), 'utf8'),
+]);
+assert.match(readmeZh, /\[English\]\(README\.en\.md\)/u);
+assert.match(readmeEn, /\[中文\]\(README\.md\)/u);
 
 const skillDirectories = (await readdir(path.join(root, 'skills'), { withFileTypes: true }))
   .filter((entry) => entry.isDirectory());
@@ -66,6 +95,8 @@ console.log(JSON.stringify({
   total_bytes: totalBytes,
   knowledge_units: units.length,
   knowledge_chunks: chunks.length,
-  media_files: forbidden.length,
+  forbidden_media_files: invalidMedia.length,
+  readme_media_files: mediaFiles.length,
+  readme_media_bytes: readmeMediaBytes,
   skills: skillDirectories.length,
 }, null, 2));

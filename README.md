@@ -1,73 +1,92 @@
+<div align="center">
+
+[中文](README.md) · [English](README.en.md)
+
+<img src="https://raw.githubusercontent.com/forgeturl/dsh-douyin-creator/main/docs/images/hero.svg" alt="先查官方资料，再做抖音内容" width="100%">
+
 # dsh-douyin-creator
 
-基于抖音官方资料的 DeepSeek Harness 自媒体创作与运营插件
+**让 DeepSeek 在给出抖音运营建议前，先查抖音官方资料。**
 
-**让 DeepSeek 在给你抖音运营建议前，先查抖音官方资料。**
+[![CI](https://github.com/forgeturl/dsh-douyin-creator/actions/workflows/ci.yml/badge.svg)](https://github.com/forgeturl/dsh-douyin-creator/actions/workflows/ci.yml)
+[![Node.js](https://img.shields.io/badge/Node.js-22.19%2B_%7C_24%2B-339933?logo=nodedotjs&logoColor=white)](package.json)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![DeepSeek Harness](https://img.shields.io/badge/DeepSeek_Harness-plugin-5B67F1)](https://github.com/deepseek-ai/deepseek-harness)
 
-`dsh-douyin-creator` 是一个面向 DeepSeek Harness 的抖音自媒体证据插件。它把抖音官方公开的推荐、分发、搜索、治理和技术资料变成可检索的知识库，再用于选题评估、脚本审查、数据诊断和内容周计划。
+</div>
 
-如果你不想再靠“八级流量池”“账号权重”“万能发布时间”这类未经官方证实的说法做内容决策，这个插件可以让每一条建议尽量回到可追溯的官方资料、明确的推断边界和可复盘的运营实验。
+这是一个面向 DeepSeek Harness 的抖音自媒体证据插件。它把抖音官方公开的推荐、分发、搜索、治理和技术资料变成可检索的知识库，再用于选题评估、脚本审查、数据诊断和内容周计划。
 
-## 真实运营案例
+如果你不想再靠“八级流量池”“账号权重”“万能发布时间”这类未经官方证实的说法做内容决策，它会帮你把建议拆成可追溯的官方资料、明确的推断边界和可复盘的运营实验。
 
-维护者已经把这套工具与工作流用于抖音号《商道人物志》的实际运营。截至 2026 年 8 月，账号即将突破 **6 万粉丝**，实际运营效果显著。
-
-这是一项真实运营实践，不代表所有账号都能复制相同结果，也不构成对播放、涨粉或收益的保证。
-
-## 它能帮你解决什么
-
-- **这个选题值不值得做？** 检索推荐、搜索和内容质量资料，再给出可测试的选题判断。
-- **脚本有没有伪算法或事实风险？** 检查平台机制、数字、因果关系、封面和口播中的高风险表达。
-- **播放低到底该查什么？** 同时检查内容信号、受众匹配、搜索承接、原创和治理资格，而不是简单归因于“账号权重”。
-- **下周应该发什么？** 把内容假设、作品安排、观察指标和停止条件组成可执行的周计划。
-- **官方到底说过什么？** 返回资料 ID、标题、发布时间、原始链接和相关证据摘要。
-
-## 当前状态
-
-- 版本：`0.1.0` MVP
-- 资料快照：2026-08-13 至 2026-08-14；索引最后构建于 2026-08-21
-- 知识单元：73；切片：231
-- DeepSeek Harness 目前仍处于开发预览阶段，后续接口可能变化
-
-涉及“当前、最新、今天、现在入口、现行政策”等问题时，必须继续核对最新官方网页，不能只依赖本地快照。
-
-## 包含的工具与 Skill
-
-插件注册一个工具：
-
-- `douyin_official_search`：按关键词检索官方资料，返回资料 ID、标题、官方链接、发布时间、证据摘要和快照提示。
-
-同时注册四个窄职责 Skill：
-
-- `douyin-topic-evaluation`：评估选题与抖音机制、搜索需求、风险的关系。
-- `douyin-script-review`：审查脚本中的平台机制、事实、数字和因果边界。
-- `douyin-data-diagnosis`：用账号自身基线诊断流量，不虚构统一阈值。
-- `douyin-weekly-plan`：把证据、假设、动作和复盘指标组成一周实验计划。
-
-## 安装
-
-本地开发安装：
+## 30 秒上手
 
 ```bash
-dsh plugin --profile web add /absolute/path/to/dsh-douyin-creator
+# 安装
+dsh plugin --profile web add github:forgeturl/dsh-douyin-creator#main
+
+# 确认插件已经进入配置
+dsh --profile web --dump-config
+
+# 启动 DeepSeek Harness Web UI
+dsh web
 ```
 
-从 GitHub 安装：
-
-```bash
-dsh plugin --profile web add github:forgeturl/dsh-douyin-creator
-```
-
-插件没有安装期构建脚本，运行所需的 `index.js` 已直接提交，避免 Git 安装时触发额外构建权限。
-
-## 使用
-
-可以直接让 Harness 调用工具：
+然后直接粘贴：
 
 ```text
-请先用 douyin_official_search 检索“推荐 多目标 内容质量”，
-再区分官方公开、合理推断和运营建议，评估这条选题。
+请先用 douyin_official_search 检索“推荐算法 内容质量”，
+再区分官方公开、合理推断和运营建议，评估我的选题。
 ```
+
+> 生产或团队环境建议把 `#main` 换成具体 commit SHA，避免上游更新造成结果漂移。DeepSeek Harness 仍处于开发预览阶段，命令或插件接口后续可能变化。
+
+### 真实 Web UI 加载结果
+
+下图来自隔离的 DeepSeek Harness `0.1.0-rc.7` 环境：插件通过 tarball 安装后，在插件列表中显示为 **已启用**。验证过程没有使用维护者的 API Key 或现有 DSH 配置。
+
+<img src="https://raw.githubusercontent.com/forgeturl/dsh-douyin-creator/main/docs/images/plugin-loaded.webp" alt="DeepSeek Harness 插件列表中 douyin-creator 已启用" width="100%">
+
+## 它能帮你做什么
+
+| 你的问题 | 插件的处理方式 |
+| --- | --- |
+| 这个选题值不值得做？ | 检索推荐、搜索、内容质量和治理资料，再给出可测试的选题判断 |
+| 脚本有没有伪算法或事实风险？ | 检查平台机制、数字、因果关系、封面和口播中的高风险表达 |
+| 播放低到底该查什么？ | 同时检查内容、受众、搜索、原创和治理信号，不简单归因于“账号权重” |
+| 下周应该发什么？ | 把内容假设、作品安排、观察指标和停止条件组成一周实验 |
+| 官方到底说过什么？ | 返回资料 ID、标题、发布时间、官方链接和相关证据摘要 |
+
+## 真实资料，分层结论
+
+下面不是虚构的产品界面，而是用插件当前索引中的真实资料制作的检索结果说明图。每条结果都能回到资料 ID 和官方链接。
+
+<img src="https://raw.githubusercontent.com/forgeturl/dsh-douyin-creator/main/docs/images/evidence-result.svg" alt="douyin_official_search 真实检索数据示例" width="100%">
+
+插件要求回答区分四层：
+
+1. **官方公开**：原文直接支持的机制、规则或产品说明。
+2. **合理推断**：依据公开机制推导，但官方没有直接承诺。
+3. **运营建议**：可测试、可复盘的选题、脚本、发布或诊断动作。
+4. **账号结论**：只有拿到账号样本、时间窗和统计口径后才能形成。
+
+它不会把固定多级流量池、统一账号权重分、永久指标权重、全赛道留存合格线、保证热门公式或通用最佳发布时间写成抖音官方结论。
+
+## 真实运营实践
+
+维护者已经把这套工具和工作流用于抖音号《商道人物志》的实际运营。截至 **2026 年 8 月**，账号接近 **6 万粉丝**，实践效果显著。
+
+这是维护者的单账号实践，不代表所有账号都能复制相同结果，也不构成对播放、涨粉或收益的保证。
+
+## 一个工具，四个窄职责 Skill
+
+| 名称 | 作用 |
+| --- | --- |
+| `douyin_official_search` | 检索 73 个知识单元、231 个切片，返回资料 ID、官方链接、日期和证据摘要 |
+| `douyin-topic-evaluation` | 评估选题与用户需求、搜索机会、内容价值和治理风险 |
+| `douyin-script-review` | 审查平台机制、事实、数字、因果边界，并返回可直接替换的文案 |
+| `douyin-data-diagnosis` | 使用账号自身基线诊断内容、受众、搜索、原创和治理信号 |
+| `douyin-weekly-plan` | 把证据、假设、发布动作和指标组织成一周实验计划 |
 
 也可以显式调用 Skill：
 
@@ -75,35 +94,61 @@ dsh plugin --profile web add github:forgeturl/dsh-douyin-creator
 /douyin-script-review
 ```
 
-推荐的答案证据层级：
+## 兼容性与资料时效
 
-1. 官方公开：原文直接支持。
-2. 合理推断：由公开机制推导，但官方未承诺。
-3. 运营建议：可测试、可复盘的动作。
-4. 账号结论：仅在用户给出数据后形成，并说明样本、时间窗和不确定性。
+| 项目 | 当前状态 |
+| --- | --- |
+| 插件版本 | `0.1.0` MVP |
+| Node.js | `^22.19.0` 或 `>=24.0.0` |
+| DeepSeek Harness | 已用 `0.1.0-rc.7` 完成安装、配置合成和加载验证 |
+| 资料快照 | 2026-08-13 至 2026-08-14 |
+| 索引构建 | 2026-08-21 |
+| 知识规模 | 73 个知识单元；231 个切片 |
+| 分发媒体 | npm 包内 0 个图片、音频或视频文件；README 图不随包下载 |
 
-禁止把固定多级流量池、统一账号权重分、永久指标权重、通用留存合格线、保证热门公式或通用最佳发布时间写成官方结论。
+涉及“当前、最新、今天、现在入口、现行政策”等问题时，必须继续核对最新官方网页，不能只依赖本地快照。
 
-## 数据与体积边界
+## 安装、更新与移除
 
-`data/` 只分发以下文字文件：
+从 GitHub 安装：
+
+```bash
+dsh plugin --profile web add github:forgeturl/dsh-douyin-creator#main
+```
+
+本地开发安装：
+
+```bash
+dsh plugin --profile web add /absolute/path/to/dsh-douyin-creator
+```
+
+插件已经提交运行所需的 `index.js`，Git 安装时不需要执行构建脚本。更新和移除请使用 Harness 当前版本提供的 `plugin` 子命令；执行前可以先运行 `dsh plugin --help` 核对当前语法。
+
+## 数据与下载体积
+
+公开 npm 包只分发运行代码、四个 Skill 和以下文字数据：
 
 - `knowledge_units.jsonl`
 - `knowledge_chunks.jsonl`
 - `source_manifest.jsonl`
 - `archive_summary.json`
 
-仓库校验会拒绝音频、视频、图片、GIF、SVG 和 PDF，并将非 Git 文件总大小限制在 5 MiB 以内。官方链接保留在每条记录的 `source_url` 中。
+仓库只允许 `docs/images/` 下受控的 SVG/WebP 说明图；单文件不超过 300 KiB、合计不超过 600 KiB，并明确排除 GIF、视频、音频、PDF 和高分辨率 PNG/JPG。README 图片不进入 npm 包。
 
-## 本地验证
+## 开发与验证
 
 ```bash
 npm test
 npm run pack:check
 ```
 
-`npm test` 会验证检索、索引计数、Skill 元数据、Harness 清单、媒体零文件和包体积上限。`npm run pack:check` 用于检查最终 npm 包清单与体积。
+测试会检查检索、中文可读输出、索引计数、Skill 元数据、Harness 清单、媒体边界和双语 README。`pack:check` 用于核对最终 npm 包清单与体积。
 
-## 贡献
+## 参与项目
 
-新增平台事实时，请提供官方原文链接、发布时间、检索时间和资料类型。转写材料只能作为补充；关键数字、否定词和规则边界应回听或用正式文本复核。
+- 贡献规范：[CONTRIBUTING.md](CONTRIBUTING.md)
+- 安全问题：[SECURITY.md](SECURITY.md)
+- 版本记录：[CHANGELOG.md](CHANGELOG.md)
+- 许可证：[MIT](LICENSE)；第三方公开资料的权利说明见 [NOTICE.md](NOTICE.md)
+
+欢迎提交新的官方资料、可复现问题和小而清晰的 Skill 改进。新增平台事实必须带官方原文链接、发布时间、检索时间和资料类型；机器转写只能作为补充证据。

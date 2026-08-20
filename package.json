@@ -7,6 +7,14 @@
   "exports": {
     ".": "./index.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/forgeturl/dsh-douyin-creator.git"
+  },
+  "homepage": "https://github.com/forgeturl/dsh-douyin-creator#readme",
+  "bugs": {
+    "url": "https://github.com/forgeturl/dsh-douyin-creator/issues"
+  },
   "files": [
     "index.js",
     "lib/",
@@ -15,11 +23,15 @@
     "evals/",
     "cordis.patch.yml",
     "README.md",
+    "README.en.md",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+    "SECURITY.md",
     "LICENSE",
     "NOTICE.md"
   ],
   "scripts": {
-    "test": "node --test && node scripts/validate-package.mjs",
+    "test": "node --check index.js && node --test && node scripts/validate-package.mjs",
     "pack:check": "npm --cache ./.npm-cache pack --dry-run"
   },
   "keywords": [
@@ -31,12 +43,11 @@
     "agent-skill"
   ],
   "license": "MIT",
-  "engines": {
-    "node": ">=22"
+  "publishConfig": {
+    "access": "public"
   },
-  "peerDependencies": {
-    "@deepseek-ai/cordis": "^4.0.0-rc.7 || ^4.0.1-rc.1",
-    "@deepseek-ai/dsh-tools": "^0.0.1-rc.1 || ^0.1.0-rc.6"
+  "engines": {
+    "node": "^22.19.0 || >=24.0.0"
   },
   "dsh": {
     "bundle": {
