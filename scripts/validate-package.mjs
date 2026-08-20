@@ -66,12 +66,17 @@ assert.ok(units.every((unit) => /^https:\/\//u.test(unit.source_url)), '每个�
 const packageJson = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8'));
 assert.equal(packageJson.dsh?.bundle?.patch, './cordis.patch.yml');
 assert.equal(packageJson.main, './index.js');
+assert.equal(packageJson.bin?.['dsh-douyin-creator'], './bin/install.mjs');
 assert.equal(packageJson.engines?.node, '^22.19.0 || >=24.0.0');
 assert.equal(packageJson.repository?.url, 'git+https://github.com/forgeturl/dsh-douyin-creator.git');
 assert.equal(packageJson.publishConfig?.access, 'public');
 assert.equal(packageJson.dependencies, undefined, '插件运行时应保持零第三方依赖');
 assert.equal(packageJson.peerDependencies, undefined, '插件不应要求用户额外安装 peer 依赖');
 assert.ok(packageJson.files.every((entry) => !entry.startsWith('docs')), 'npm files 不得包含 README 图片目录');
+
+const installer = await readFile(path.join(root, 'bin', 'install.mjs'), 'utf8');
+assert.match(installer, /@deepseek-ai\/dsh@0\.1\.0-rc\.7/u);
+assert.match(installer, /major === 22 && minor >= 19/u);
 
 const [readmeZh, readmeEn] = await Promise.all([
   readFile(path.join(root, 'README.md'), 'utf8'),

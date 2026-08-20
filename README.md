@@ -21,16 +21,17 @@
 
 ## 30 秒上手
 
-```bash
-# 安装
-dsh plugin --profile web add github:forgeturl/dsh-douyin-creator#main
+需要 Node.js `22.19+` 或 `24+`。无需预先安装全局 `dsh` 命令，复制下面两行即可：
 
-# 确认插件已经进入配置
-dsh --profile web --dump-config
+```bash
+# 一条命令安装插件
+npx --yes github:forgeturl/dsh-douyin-creator#main
 
 # 启动 DeepSeek Harness Web UI
-dsh web
+npx --yes @deepseek-ai/dsh@0.1.0-rc.7 web
 ```
+
+安装器会先检查 Node.js 版本，再调用 DeepSeek Harness 完成安装；不会修改你的 API Key。若终端仍提示 `dsh: command not found`，请直接使用上面的 `npx` 命令，不需要另外配置全局 PATH。
 
 然后直接粘贴：
 
@@ -110,19 +111,25 @@ dsh web
 
 ## 安装、更新与移除
 
-从 GitHub 安装：
+推荐安装方式（不要求全局存在 `dsh` 命令）：
 
 ```bash
-dsh plugin --profile web add github:forgeturl/dsh-douyin-creator#main
+npx --yes github:forgeturl/dsh-douyin-creator#main
+```
+
+也可以直接使用 DeepSeek Harness 官方推荐的 `npx` 运行方式：
+
+```bash
+npx --yes @deepseek-ai/dsh@0.1.0-rc.7 plugin --profile web add 'github:forgeturl/dsh-douyin-creator#main'
 ```
 
 本地开发安装：
 
 ```bash
-dsh plugin --profile web add /absolute/path/to/dsh-douyin-creator
+npx --yes @deepseek-ai/dsh@0.1.0-rc.7 plugin --profile web add /absolute/path/to/dsh-douyin-creator
 ```
 
-插件已经提交运行所需的 `index.js`，Git 安装时不需要执行构建脚本。更新和移除请使用 Harness 当前版本提供的 `plugin` 子命令；执行前可以先运行 `dsh plugin --help` 核对当前语法。
+插件已经提交运行所需的 `index.js`，Git 安装时不需要执行构建脚本。更新和移除请使用 Harness 当前版本提供的 `plugin` 子命令；执行前可以先运行 `npx --yes @deepseek-ai/dsh@0.1.0-rc.7 plugin --help` 核对当前语法。
 
 ## 数据与下载体积
 

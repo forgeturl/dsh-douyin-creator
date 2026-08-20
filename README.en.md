@@ -21,16 +21,17 @@ It is designed for creators who want traceable sources and testable experiments 
 
 ## Get started in 30 seconds
 
-```bash
-# Install
-dsh plugin --profile web add github:forgeturl/dsh-douyin-creator#main
+Requires Node.js `22.19+` or `24+`. You do not need a globally installed `dsh` command; copy these two lines:
 
-# Confirm that the plugin is present in the resolved configuration
-dsh --profile web --dump-config
+```bash
+# One-command plugin installation
+npx --yes github:forgeturl/dsh-douyin-creator#main
 
 # Start the DeepSeek Harness Web UI
-dsh web
+npx --yes @deepseek-ai/dsh@0.1.0-rc.7 web
 ```
+
+The installer checks the Node.js version before asking DeepSeek Harness to install the plugin, and it does not modify your API key. If your shell still reports `dsh: command not found`, use the `npx` commands above instead of configuring a global PATH.
 
 Then paste this prompt:
 
@@ -111,19 +112,25 @@ Questions about current policies, interfaces, or rules must still be checked aga
 
 ## Install and develop
 
-Install from GitHub:
+Recommended installation (no global `dsh` command required):
 
 ```bash
-dsh plugin --profile web add github:forgeturl/dsh-douyin-creator#main
+npx --yes github:forgeturl/dsh-douyin-creator#main
+```
+
+Or use the `npx` invocation recommended by DeepSeek Harness directly:
+
+```bash
+npx --yes @deepseek-ai/dsh@0.1.0-rc.7 plugin --profile web add 'github:forgeturl/dsh-douyin-creator#main'
 ```
 
 Install a local checkout:
 
 ```bash
-dsh plugin --profile web add /absolute/path/to/dsh-douyin-creator
+npx --yes @deepseek-ai/dsh@0.1.0-rc.7 plugin --profile web add /absolute/path/to/dsh-douyin-creator
 ```
 
-The runtime `index.js` is committed, so a Git install does not need a build step. Use the `plugin` subcommands provided by your installed Harness version to update or remove the plugin; run `dsh plugin --help` first to confirm the current syntax.
+The runtime `index.js` is committed, so a Git install does not need a build step. Use the `plugin` subcommands provided by your installed Harness version to update or remove the plugin; run `npx --yes @deepseek-ai/dsh@0.1.0-rc.7 plugin --help` first to confirm the current syntax.
 
 ## Download-size boundary
 

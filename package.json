@@ -7,6 +7,9 @@
   "exports": {
     ".": "./index.js"
   },
+  "bin": {
+    "dsh-douyin-creator": "./bin/install.mjs"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/forgeturl/dsh-douyin-creator.git"
@@ -16,6 +19,7 @@
     "url": "https://github.com/forgeturl/dsh-douyin-creator/issues"
   },
   "files": [
+    "bin/",
     "index.js",
     "lib/",
     "data/",
