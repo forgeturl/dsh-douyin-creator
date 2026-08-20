@@ -1,10 +1,26 @@
 # dsh-douyin-creator
 
-Evidence-backed Douyin creator workflows for DeepSeek Harness
+基于抖音官方资料的 DeepSeek Harness 自媒体创作与运营插件
 
-一个面向 DeepSeek Harness 的抖音自媒体证据插件：先检索抖音官方公开材料，再做选题、脚本审查、数据诊断和周计划。
+**让 DeepSeek 在给你抖音运营建议前，先查抖音官方资料。**
 
-它不是“爆款公式库”，也不承诺流量、涨粉或收益。公开包只包含文字索引、检索工具、Skill 和评测，不包含原始视频、音频、图片、GIF 或 PDF。
+`dsh-douyin-creator` 是一个面向 DeepSeek Harness 的抖音自媒体证据插件。它把抖音官方公开的推荐、分发、搜索、治理和技术资料变成可检索的知识库，再用于选题评估、脚本审查、数据诊断和内容周计划。
+
+如果你不想再靠“八级流量池”“账号权重”“万能发布时间”这类未经官方证实的说法做内容决策，这个插件可以让每一条建议尽量回到可追溯的官方资料、明确的推断边界和可复盘的运营实验。
+
+## 真实运营案例
+
+维护者已经把这套工具与工作流用于抖音号《商道人物志》的实际运营。截至 2026 年 8 月，账号即将突破 **6 万粉丝**，实际运营效果显著。
+
+这是一项真实运营实践，不代表所有账号都能复制相同结果，也不构成对播放、涨粉或收益的保证。
+
+## 它能帮你解决什么
+
+- **这个选题值不值得做？** 检索推荐、搜索和内容质量资料，再给出可测试的选题判断。
+- **脚本有没有伪算法或事实风险？** 检查平台机制、数字、因果关系、封面和口播中的高风险表达。
+- **播放低到底该查什么？** 同时检查内容信号、受众匹配、搜索承接、原创和治理资格，而不是简单归因于“账号权重”。
+- **下周应该发什么？** 把内容假设、作品安排、观察指标和停止条件组成可执行的周计划。
+- **官方到底说过什么？** 返回资料 ID、标题、发布时间、原始链接和相关证据摘要。
 
 ## 当前状态
 
@@ -15,7 +31,7 @@ Evidence-backed Douyin creator workflows for DeepSeek Harness
 
 涉及“当前、最新、今天、现在入口、现行政策”等问题时，必须继续核对最新官方网页，不能只依赖本地快照。
 
-## 能做什么
+## 包含的工具与 Skill
 
 插件注册一个工具：
 
@@ -36,10 +52,10 @@ Evidence-backed Douyin creator workflows for DeepSeek Harness
 dsh plugin --profile web add /absolute/path/to/dsh-douyin-creator
 ```
 
-发布到 GitHub 后，可以固定到具体提交安装：
+从 GitHub 安装：
 
 ```bash
-dsh plugin --profile web add github:<your-account>/dsh-douyin-creator#<commit-sha>
+dsh plugin --profile web add github:forgeturl/dsh-douyin-creator
 ```
 
 插件没有安装期构建脚本，运行所需的 `index.js` 已直接提交，避免 Git 安装时触发额外构建权限。
@@ -87,16 +103,6 @@ npm run pack:check
 ```
 
 `npm test` 会验证检索、索引计数、Skill 元数据、Harness 清单、媒体零文件和包体积上限。`npm run pack:check` 用于检查最终 npm 包清单与体积。
-
-## GitHub 仓库建议
-
-- 仓库名：`dsh-douyin-creator`
-- 描述：`Evidence-backed Douyin creator workflows for DeepSeek Harness`
-- Topics：`deepseek-harness`、`dsh-plugin`、`douyin`、`creator-tools`、`agent-skills`
-- 默认分支：`main`
-- 首个里程碑：`v0.1.0-mvp`
-
-首次公开前，建议再完成一次第三方材料分发权审查。代码和 Skill 可以采用 MIT；`data/` 中的第三方公开文本不应被 MIT 重新授权。
 
 ## 贡献
 
