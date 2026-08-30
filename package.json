@@ -1,6 +1,6 @@
 {
   "name": "dsh-douyin-creator",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "基于抖音官方资料的 DeepSeek Harness 自媒体创作与运营插件",
   "type": "module",
   "main": "./index.js",

@@ -2,6 +2,24 @@
 
 本项目遵循[语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.2.0] - 2026-08-30
+
+### 新增
+
+- Windows、macOS 普通用户双击安装器：自动准备免管理员权限的便携 Node.js、安装插件、自检并启动 Web UI。
+- 官方 npm 源与国内镜像自动回退、下载重试、缓存复用和 Node.js SHA-256 校验。
+- `douyin_official_source_read` 原文分页读取工具，用资料 ID 继续核对上下文。
+- 自然语言问题识别与检索扩展，可直接处理“为什么我的视频没流量”等普通表达。
+- `douyin-creator-onboarding` 新手引导 Skill，输出账号卡片、内容支柱和第一周最小可行作品。
+- `--doctor` 环境自检，以及配有真实 Web UI 截图的普通客户教程。
+- DeepSeek-V4-Flash 真实端到端验收：覆盖五个 Skill、两个官方资料工具和 Web UI 完整对话。
+
+### 改进
+
+- 安装过程中不再二次访问 GitHub，使用 pnpm 加速 DSH 大依赖树解析；首次弱网安装会显示等待说明并复用缓存。
+- Windows 安装器兼容英文 Windows PowerShell 5.1 的 UTF-8 解析，并修复 doctor 对 `npx.cmd` 的调用。
+- 工具回答继续明确区分官方公开、合理推断、运营建议和账号结论。
+
 ## [0.1.0] - 2026-08-21
 
 ### 新增

@@ -3,6 +3,7 @@ node_modules/
 .DS_Store
 .dsh/
 .npm-cache/
+dist/
 
 # This public bundle is intentionally text-only.
 *.mp4
