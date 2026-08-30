@@ -201,6 +201,7 @@ try {
 
   Write-Host ''
   Write-Host '正在执行环境自检…'
+  Set-InstallerPhase 'doctor-starting'
   & $NodeBin (Join-Path $PluginDirectory 'bin\install.mjs') --doctor --profile $Profile
   if ($LASTEXITCODE -ne 0) { throw '环境自检未通过。' }
   Set-InstallerPhase 'doctor-ready'

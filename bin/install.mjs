@@ -98,7 +98,13 @@ function runDoctor() {
     '请使用双击安装器自动安装便携 Node.js 24。',
   );
 
-  const npxVersion = spawnSync(npxCommand, ['--version'], { encoding: 'utf8' });
+  const npxVersion = process.platform === 'win32'
+    ? spawnSync(
+      process.env.ComSpec || 'cmd.exe',
+      ['/d', '/s', '/c', `${npxCommand} --version`],
+      { encoding: 'utf8' },
+    )
+    : spawnSync(npxCommand, ['--version'], { encoding: 'utf8' });
   add(
     npxVersion.status === 0,
     'npm / npx',
