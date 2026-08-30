@@ -75,9 +75,11 @@ jobs:
         run: |
           $WindowsPowerShell = (Get-Command powershell.exe).Source
           $InstallerScript = (Resolve-Path 'installers/windows/install.ps1').Path
+          Set-Content -LiteralPath $env:DSH_INSTALL_STATUS_FILE -Value 'wrapper-ready' -Encoding Ascii
+          $EscapedInstallerScript = $InstallerScript.Replace("'", "''")
+          $InstallerCommand = "& '$EscapedInstallerScript'"
           $env:Path = "$env:SystemRoot\System32;$env:SystemRoot"
-          & $WindowsPowerShell -NoLogo -NoProfile -ExecutionPolicy Bypass `
-            -File $InstallerScript
+          & $WindowsPowerShell -NoLogo -NoProfile -ExecutionPolicy Bypass -Command $InstallerCommand
           $InstallerExitCode = $LASTEXITCODE
           if ($InstallerExitCode -ne 0) {
             $InstallerPhase = if (Test-Path $env:DSH_INSTALL_STATUS_FILE) {
