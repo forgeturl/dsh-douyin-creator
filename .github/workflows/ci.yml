@@ -31,6 +31,7 @@ jobs:
         run: npm run pack:check
 
   installer-syntax:
+    timeout-minutes: 20
     strategy:
       matrix:
         os:
@@ -60,3 +61,17 @@ jobs:
             $errors | Format-List | Out-String | Write-Error
             exit 1
           }
+
+      - name: Cold-start Windows installer
+        if: runner.os == 'Windows'
+        shell: pwsh
+        env:
+          DSH_HOME: ${{ runner.temp }}\dsh-home
+          DSH_CREATOR_RUNTIME_ROOT: ${{ runner.temp }}\dsh-runtime
+          DSH_SKIP_LAUNCH: '1'
+          DSH_NONINTERACTIVE: '1'
+          DSH_NPM_REGISTRY: https://registry.npmmirror.com
+        run: |
+          $env:Path = "$env:SystemRoot\System32;$env:SystemRoot"
+          & (Resolve-Path 'installers/windows/install.ps1')
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
