@@ -50,17 +50,17 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          $tokens = $null
-          $errors = $null
-          [System.Management.Automation.Language.Parser]::ParseFile(
-            (Resolve-Path 'installers/windows/install.ps1'),
-            [ref]$tokens,
-            [ref]$errors
-          ) | Out-Null
-          if ($errors.Count -gt 0) {
-            $errors | Format-List | Out-String | Write-Error
-            exit 1
-          }
+          $WindowsPowerShell = (Get-Command powershell.exe).Source
+          $InstallerScript = (Resolve-Path 'installers/windows/install.ps1').Path
+          $EscapedInstallerScript = $InstallerScript.Replace("'", "''")
+          $ParserCommand = @"
+          `$tokens = `$null
+          `$errors = `$null
+          [System.Management.Automation.Language.Parser]::ParseFile('$EscapedInstallerScript', [ref]`$tokens, [ref]`$errors) | Out-Null
+          if (`$errors.Count -gt 0) { exit 1 }
+          "@
+          & $WindowsPowerShell -NoLogo -NoProfile -Command $ParserCommand
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Cold-start Windows installer
         if: runner.os == 'Windows'
