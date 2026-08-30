@@ -81,7 +81,13 @@ jobs:
             $InstallLog = Join-Path $env:DSH_CREATOR_RUNTIME_ROOT 'install.log'
             if (Test-Path $InstallLog) {
               Write-Host '=== Windows installer log tail ==='
-              Get-Content $InstallLog -Tail 200
+              $InstallLogTail = Get-Content $InstallLog -Tail 120
+              $InstallLogTail
+              $Annotation = ($InstallLogTail -join "`n").Replace('%', '%25').Replace("`r", '%0D').Replace("`n", '%0A')
+              Write-Host "::error title=Windows installer log::$Annotation"
+            }
+            else {
+              Write-Host '::error title=Windows installer log::install.log was not created'
             }
             exit $InstallerExitCode
           }
