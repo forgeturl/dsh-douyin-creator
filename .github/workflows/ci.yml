@@ -73,9 +73,10 @@ jobs:
           DSH_NPM_REGISTRY: https://registry.npmmirror.com
         run: |
           $WindowsPowerShell = (Get-Command powershell.exe).Source
+          $InstallerScript = (Resolve-Path 'installers/windows/install.ps1').Path
           $env:Path = "$env:SystemRoot\System32;$env:SystemRoot"
           & $WindowsPowerShell -NoLogo -NoProfile -ExecutionPolicy Bypass `
-            -File (Resolve-Path 'installers/windows/install.ps1')
+            -File $InstallerScript
           $InstallerExitCode = $LASTEXITCODE
           if ($InstallerExitCode -ne 0) {
             $InstallLog = Join-Path $env:DSH_CREATOR_RUNTIME_ROOT 'install.log'
