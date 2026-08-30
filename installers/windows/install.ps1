@@ -1,6 +1,15 @@
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 
+function Set-InstallerPhase([string]$Phase) {
+  $StatusFile = [Environment]::GetEnvironmentVariable('DSH_INSTALL_STATUS_FILE')
+  if ($StatusFile) {
+    Set-Content -LiteralPath $StatusFile -Value $Phase -Encoding Ascii
+  }
+}
+
+Set-InstallerPhase 'started'
+
 $NodeVersion = '24.20.0'
 $PnpmVersion = '11.19.0'
 $DshPackage = '@deepseek-ai/dsh@0.1.0-rc.7'
@@ -24,7 +33,9 @@ $PnpmRoot = Join-Path $RuntimeRoot "pnpm-v$PnpmVersion"
 $LogFile = Join-Path $RuntimeRoot 'install.log'
 
 New-Item -ItemType Directory -Force -Path $CacheRoot | Out-Null
+Set-InstallerPhase 'runtime-ready'
 Start-Transcript -Path $LogFile -Append | Out-Null
+Set-InstallerPhase 'transcript-ready'
 
 function Test-CompatibleNode([string]$NodePath) {
   try {
@@ -115,6 +126,7 @@ try {
     Install-PortableNode
     $NodeBin = Join-Path $NodeRoot 'node.exe'
   }
+  Set-InstallerPhase 'node-ready'
 
   $NodeBinDirectory = Split-Path -Parent $NodeBin
   $env:Path = "$NodeBinDirectory;$env:Path"
@@ -139,6 +151,7 @@ try {
   }
   if (-not $NpmRegistry) { throw '官方源和备用镜像都无法访问，请连接网络后重试。' }
   Write-Host "使用软件源：$NpmRegistry"
+  Set-InstallerPhase 'registry-ready'
 
   $PnpmBin = Join-Path $PnpmRoot 'node_modules\.bin\pnpm.cmd'
   if (Test-Path $PnpmBin) {
@@ -162,6 +175,7 @@ try {
   $env:PNPM_CONFIG_STORE_DIR = Join-Path $CacheRoot 'pnpm-store'
   New-Item -ItemType Directory -Force -Path $env:PNPM_HOME, $env:PNPM_CONFIG_CACHE_DIR, $env:PNPM_CONFIG_STORE_DIR | Out-Null
   $env:Path = "$(Split-Path -Parent $PnpmBin);$env:Path"
+  Set-InstallerPhase 'pnpm-ready'
 
   Write-Host ''
   Write-Host '正在制作本地插件安装包，避免再次访问 GitHub…'
@@ -176,26 +190,31 @@ try {
   $PackageFile = @($PackOutput)[-1].Trim()
   $PackagePath = Join-Path $CacheRoot $PackageFile
   if (-not (Test-Path $PackagePath)) { throw '没有找到本地插件安装包。' }
+  Set-InstallerPhase 'package-ready'
 
   Write-Host ''
   Write-Host '正在安装 DeepSeek Harness 与插件。首次安装依赖较多，弱网下可能需要 5 到 15 分钟。'
   Write-Host '即使一段时间没有新文字，也请保持窗口打开；失败后重试会继续复用缓存。'
   & $PnpmBin "--package=$DshPackage" dlx dsh plugin --profile $Profile add $PackagePath
   if ($LASTEXITCODE -ne 0) { throw 'DeepSeek Harness 或插件安装失败；请重新双击，缓存会继续使用。' }
+  Set-InstallerPhase 'plugin-ready'
 
   Write-Host ''
   Write-Host '正在执行环境自检…'
   & $NodeBin (Join-Path $PluginDirectory 'bin\install.mjs') --doctor --profile $Profile
   if ($LASTEXITCODE -ne 0) { throw '环境自检未通过。' }
+  Set-InstallerPhase 'doctor-ready'
 
   if ($env:DSH_SKIP_LAUNCH -eq '1') {
     Write-Host ''
     Write-Host '安装与自检已完成；按测试设置跳过网页启动。'
+    Set-InstallerPhase 'complete'
     exit 0
   }
 
   Write-Host ''
   Write-Host '安装完成，正在启动网页。关闭本窗口会停止服务。'
+  Set-InstallerPhase 'web-starting'
   $BrowserJob = Start-Job -ScriptBlock {
     for ($Attempt = 1; $Attempt -le 60; $Attempt++) {
       try {

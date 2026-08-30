@@ -71,6 +71,7 @@ jobs:
           DSH_SKIP_LAUNCH: '1'
           DSH_NONINTERACTIVE: '1'
           DSH_NPM_REGISTRY: https://registry.npmmirror.com
+          DSH_INSTALL_STATUS_FILE: ${{ runner.temp }}\dsh-install-status.txt
         run: |
           $WindowsPowerShell = (Get-Command powershell.exe).Source
           $InstallerScript = (Resolve-Path 'installers/windows/install.ps1').Path
@@ -79,16 +80,10 @@ jobs:
             -File $InstallerScript
           $InstallerExitCode = $LASTEXITCODE
           if ($InstallerExitCode -ne 0) {
-            $InstallLog = Join-Path $env:DSH_CREATOR_RUNTIME_ROOT 'install.log'
-            if (Test-Path $InstallLog) {
-              Write-Host '=== Windows installer log tail ==='
-              $InstallLogTail = Get-Content $InstallLog -Tail 120
-              $InstallLogTail
-              $Annotation = ($InstallLogTail -join "`n").Replace('%', '%25').Replace("`r", '%0D').Replace("`n", '%0A')
-              Write-Host "::error title=Windows installer log::$Annotation"
-            }
-            else {
-              Write-Host '::error title=Windows installer log::install.log was not created'
-            }
+            $InstallerPhase = if (Test-Path $env:DSH_INSTALL_STATUS_FILE) {
+              (Get-Content $env:DSH_INSTALL_STATUS_FILE -Raw).Trim()
+            } else { 'not-started' }
+            if ($InstallerPhase -notmatch '^[a-z0-9-]+$') { $InstallerPhase = 'invalid-status' }
+            Write-Host "::error title=Windows installer phase::Stopped after phase: $InstallerPhase"
             exit $InstallerExitCode
           }

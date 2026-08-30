@@ -45,6 +45,8 @@ test('Windows one-click installer uses portable Node and verified downloads', as
   assert.match(content, /PNPM_CONFIG_CACHE_DIR/u);
   assert.match(content, /--package=\$DshPackage/u);
   assert.match(content, /Split-Path -Parent \$PnpmBin/u);
+  assert.match(content, /DSH_INSTALL_STATUS_FILE/u);
+  assert.match(content, /Set-InstallerPhase 'complete'/u);
   assert.match(content, /5 到 15 分钟/u);
   assert.doesNotMatch(content, /winget|choco|-Verb\s+RunAs/u);
   assert.doesNotMatch(content, /npm\s+config\s+set/u);
