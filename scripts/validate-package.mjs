@@ -17,7 +17,7 @@ const maxReadmeMediaTotalBytes = 600 * 1024;
 async function walk(directory) {
   const files = [];
   for (const entry of await readdir(directory, { withFileTypes: true })) {
-    if (entry.name === '.git' || entry.name === 'node_modules' || entry.name === '.npm-cache') continue;
+    if (entry.name === '.git' || entry.name === 'node_modules' || entry.name === '.npm-cache' || entry.name === 'dist') continue;
     const absolute = path.join(directory, entry.name);
     if (entry.isDirectory()) files.push(...await walk(absolute));
     else files.push(absolute);
@@ -84,10 +84,17 @@ const [readmeZh, readmeEn] = await Promise.all([
 ]);
 assert.match(readmeZh, /\[English\]\(README\.en\.md\)/u);
 assert.match(readmeEn, /\[中文\]\(README\.md\)/u);
+const customerGuide = await readFile(path.join(root, '普通客户使用教程.md'), 'utf8');
+assert.match(customerGuide, /Windows-双击安装并启动\.cmd/u);
+assert.match(customerGuide, /macOS-双击安装并启动\.command/u);
+assert.match(customerGuide, /tutorial-plugin-enabled\.webp/u);
+assert.match(customerGuide, /tutorial-model-settings\.webp/u);
+assert.match(customerGuide, /tutorial-real-tool-calls\.webp/u);
+assert.match(customerGuide, /tutorial-real-source-links\.webp/u);
 
 const skillDirectories = (await readdir(path.join(root, 'skills'), { withFileTypes: true }))
   .filter((entry) => entry.isDirectory());
-assert.equal(skillDirectories.length, 4, '应包含四个窄职责 Skill');
+assert.equal(skillDirectories.length, 5, '应包含五个窄职责 Skill');
 for (const directory of skillDirectories) {
   const content = await readFile(path.join(root, 'skills', directory.name, 'SKILL.md'), 'utf8');
   assert.match(content, /^---\nname: [a-z0-9-]+\ndescription: .+\nwhenToUse: .+\n---\n/u);

@@ -19,9 +19,20 @@
 
 如果你不想再靠“八级流量池”“账号权重”“万能发布时间”这类未经官方证实的说法做内容决策，它会帮你把建议拆成可追溯的官方资料、明确的推断边界和可复盘的运营实验。
 
-## 30 秒上手
+## 普通用户：双击安装
 
-需要 Node.js `22.19+` 或 `24+`。无需预先安装全局 `dsh` 命令，复制下面两行即可：
+不需要预先安装 DSH、Node.js、Git 或开发工具，也不需要管理员权限。下载并解压完整项目后：
+
+- Windows：双击 [`Windows-双击安装并启动.cmd`](Windows-双击安装并启动.cmd)
+- macOS：双击 [`macOS-双击安装并启动.command`](macOS-双击安装并启动.command)
+
+安装器会自动准备兼容的便携 Node.js、选择可访问的软件源、安装插件、执行环境自检并打开网页。官方源不可用时会自动尝试国内镜像，下载与 npm 依赖会保留缓存，Node.js 安装包会做 SHA-256 校验；整个过程不会读取或修改 API Key，也不会改全局 npm 配置。
+
+第一次安装依赖较多，弱网下可能需要 5 到 15 分钟。完整图文步骤、首次提问模板和故障处理见：**[普通客户使用教程](普通客户使用教程.md)**。
+
+## 开发者：命令安装
+
+已有 Node.js `22.19+` 或 `24+` 时，无需预先安装全局 `dsh` 命令，复制下面两行即可：
 
 ```bash
 # 一条命令安装插件
@@ -31,7 +42,7 @@ npx --yes github:forgeturl/dsh-douyin-creator#main
 npx --yes @deepseek-ai/dsh@0.1.0-rc.7 web
 ```
 
-安装器会先检查 Node.js 版本，再调用 DeepSeek Harness 完成安装；不会修改你的 API Key。若终端仍提示 `dsh: command not found`，请直接使用上面的 `npx` 命令，不需要另外配置全局 PATH。
+命令安装器会先检查 Node.js 版本，再调用 DeepSeek Harness 完成安装；不会修改你的 API Key。若终端仍提示 `dsh: command not found`，请直接使用上面的 `npx` 命令，不需要另外配置全局 PATH。
 
 然后直接粘贴：
 
@@ -48,6 +59,16 @@ npx --yes @deepseek-ai/dsh@0.1.0-rc.7 web
 
 <img src="https://raw.githubusercontent.com/forgeturl/dsh-douyin-creator/main/docs/images/plugin-loaded.webp" alt="DeepSeek Harness 插件列表中 douyin-creator 已启用" width="100%">
 
+### 真实模型与工具端到端验收
+
+2026-08-30，我们又在隔离配置中用 **DeepSeek-V4-Flash** 完成了真实 Web UI 对话。模型实际调用了 `douyin-data-diagnosis`、`douyin_official_search` 和 `douyin_official_source_read`，最终返回可点击的抖音官方来源与四层结论；不是只验证了插件按钮或静态代码。
+
+<img src="https://raw.githubusercontent.com/forgeturl/dsh-douyin-creator/main/docs/images/tutorial-real-tool-calls.webp" alt="DeepSeek Harness 真实调用 Skill、官方检索和原文读取" width="100%">
+
+<img src="https://raw.githubusercontent.com/forgeturl/dsh-douyin-creator/main/docs/images/tutorial-real-source-links.webp" alt="真实回答中的资料 ID、官方链接和分层结论" width="100%">
+
+API Key 仅存在于本机隔离测试配置中，没有写入仓库、对话或截图。完整测试口径和仍需远端验证的边界见[验收测试报告](docs/验收测试报告.md)。
+
 ## 它能帮你做什么
 
 | 你的问题 | 插件的处理方式 |
@@ -57,6 +78,8 @@ npx --yes @deepseek-ai/dsh@0.1.0-rc.7 web
 | 播放低到底该查什么？ | 同时检查内容、受众、搜索、原创和治理信号，不简单归因于“账号权重” |
 | 下周应该发什么？ | 把内容假设、作品安排、观察指标和停止条件组成一周实验 |
 | 官方到底说过什么？ | 返回资料 ID、标题、发布时间、官方链接和相关证据摘要 |
+| 我刚开始，不知道怎么定位？ | 生成账号卡片、3 个内容支柱和第一周 3 条最小可行作品 |
+| 摘要不够，想看原文上下文？ | 按资料 ID 分页读取官方原文，并提示转写与时效边界 |
 
 ## 真实资料，分层结论
 
@@ -79,11 +102,13 @@ npx --yes @deepseek-ai/dsh@0.1.0-rc.7 web
 
 这是维护者的单账号实践，不代表所有账号都能复制相同结果，也不构成对播放、涨粉或收益的保证。
 
-## 一个工具，四个窄职责 Skill
+## 两个工具，五个窄职责 Skill
 
 | 名称 | 作用 |
 | --- | --- |
 | `douyin_official_search` | 检索 73 个知识单元、231 个切片，返回资料 ID、官方链接、日期和证据摘要 |
+| `douyin_official_source_read` | 按资料 ID 分页读取原文上下文，正式网页优先并提示机器转写风险 |
+| `douyin-creator-onboarding` | 帮助新手建立账号卡片、内容支柱和第一周最小可行作品 |
 | `douyin-topic-evaluation` | 评估选题与用户需求、搜索机会、内容价值和治理风险 |
 | `douyin-script-review` | 审查平台机制、事实、数字、因果边界，并返回可直接替换的文案 |
 | `douyin-data-diagnosis` | 使用账号自身基线诊断内容、受众、搜索、原创和治理信号 |
@@ -99,9 +124,9 @@ npx --yes @deepseek-ai/dsh@0.1.0-rc.7 web
 
 | 项目 | 当前状态 |
 | --- | --- |
-| 插件版本 | `0.1.0` MVP |
+| 插件版本 | `0.2.0` |
 | Node.js | `^22.19.0` 或 `>=24.0.0` |
-| DeepSeek Harness | 已用 `0.1.0-rc.7` 完成安装、配置合成和加载验证 |
+| DeepSeek Harness | 已用 `0.1.0-rc.7` 完成安装、配置合成、插件加载、真实模型和工具调用验证 |
 | 资料快照 | 2026-08-13 至 2026-08-14 |
 | 索引构建 | 2026-08-21 |
 | 知识规模 | 73 个知识单元；231 个切片 |
@@ -111,7 +136,7 @@ npx --yes @deepseek-ai/dsh@0.1.0-rc.7 web
 
 ## 安装、更新与移除
 
-推荐安装方式（不要求全局存在 `dsh` 命令）：
+普通用户优先使用仓库根目录的 Windows/macOS 双击安装文件，详细步骤见[普通客户使用教程](普通客户使用教程.md)。开发者也可以使用下面的命令（不要求全局存在 `dsh`）：
 
 ```bash
 npx --yes github:forgeturl/dsh-douyin-creator#main
@@ -133,7 +158,7 @@ npx --yes @deepseek-ai/dsh@0.1.0-rc.7 plugin --profile web add /absolute/path/to
 
 ## 数据与下载体积
 
-公开 npm 包只分发运行代码、四个 Skill 和以下文字数据：
+公开 npm 包只分发运行代码、五个 Skill 和以下文字数据；带截图的教程与双击安装器随 GitHub/客户 ZIP 交付：
 
 - `knowledge_units.jsonl`
 - `knowledge_chunks.jsonl`
@@ -149,7 +174,7 @@ npm test
 npm run pack:check
 ```
 
-测试会检查检索、中文可读输出、索引计数、Skill 元数据、Harness 清单、媒体边界和双语 README。`pack:check` 用于核对最终 npm 包清单与体积。
+测试会检查自然语言检索、原文读取、中文可读输出、索引计数、Skill 元数据、Harness 清单、双击安装器、媒体边界和双语 README。`pack:check` 用于核对最终 npm 包清单与体积。
 
 ## 参与项目
 

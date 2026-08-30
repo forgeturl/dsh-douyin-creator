@@ -1,6 +1,11 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { renderSearchResult, searchArchive } from './lib/search.js';
+import {
+  readArchiveSource,
+  renderSearchResult,
+  renderSourceResult,
+  searchArchive,
+} from './lib/search.js';
 
 export const name = 'dsh-douyin-creator';
 export const inject = ['tools', 'skills'];
@@ -26,10 +31,16 @@ const SKILLS = [
     description: '把官方证据、内容假设、发布动作和复盘指标组织成一周可验证实验计划。',
     whenToUse: '用户要制定抖音周计划、内容排期、选题组合或增长实验时。',
   },
+  {
+    name: 'douyin-creator-onboarding',
+    description: '帮助普通创作者建立账号档案、确定内容支柱，并启动第一周可验证的内容实验。',
+    whenToUse: '用户刚开始做抖音、不知道该问什么、账号定位模糊，或需要从零梳理内容方向时。',
+  },
 ];
 
 const SOURCE_KINDS = ['official_web', 'official_video_transcript', 'official_pdf_attachment'];
 const SEARCH_ARG_KEYS = new Set(['query', 'limit', 'category', 'sourceKind']);
+const SOURCE_ARG_KEYS = new Set(['sourceId', 'startChunk', 'chunkLimit']);
 
 function validateSearchArgs(args) {
   if (!args || typeof args !== 'object' || Array.isArray(args)) {
@@ -49,6 +60,25 @@ function validateSearchArgs(args) {
   }
   if (args.sourceKind !== undefined && !SOURCE_KINDS.includes(args.sourceKind)) {
     throw new TypeError(`sourceKind 必须是：${SOURCE_KINDS.join('、')}`);
+  }
+  return args;
+}
+
+function validateSourceArgs(args) {
+  if (!args || typeof args !== 'object' || Array.isArray(args)) {
+    throw new TypeError('参数必须是对象');
+  }
+  for (const key of Object.keys(args)) {
+    if (!SOURCE_ARG_KEYS.has(key)) throw new TypeError(`不支持的参数：${key}`);
+  }
+  if (typeof args.sourceId !== 'string' || !args.sourceId.trim()) {
+    throw new TypeError('sourceId 必须是非空字符串');
+  }
+  if (args.startChunk !== undefined && (!Number.isInteger(args.startChunk) || args.startChunk < 1)) {
+    throw new TypeError('startChunk 必须是大于等于 1 的整数');
+  }
+  if (args.chunkLimit !== undefined && (!Number.isInteger(args.chunkLimit) || args.chunkLimit < 1 || args.chunkLimit > 3)) {
+    throw new TypeError('chunkLimit 必须是 1 到 3 的整数');
   }
   return args;
 }
@@ -77,7 +107,7 @@ function registerSkills(ctx) {
 export async function apply(ctx) {
   ctx.tools.register({
     name: 'douyin_official_search',
-    description: '检索抖音官方公开资料文字快照。用于回答推荐、分发、搜索、治理、隐私和技术机制问题；不提供爆款保证。',
+    description: '用关键词或自然语言问题检索抖音官方公开资料文字快照。用于回答推荐、分发、搜索、治理、隐私和技术机制问题；不提供爆款保证。',
     parameters: {
       type: 'object',
       properties: {
@@ -119,6 +149,52 @@ export async function apply(ctx) {
     },
     async execute(args) {
       return searchArchive(validateSearchArgs(args));
+    },
+    isConcurrencySafe() {
+      return true;
+    },
+  });
+
+  ctx.tools.register({
+    name: 'douyin_official_source_read',
+    description: '按资料 ID 分页读取检索结果对应的官方原文，用于核对上下文；涉及当前规则时仍需访问最新官方网页。',
+    parameters: {
+      type: 'object',
+      properties: {
+        sourceId: {
+          type: 'string',
+          minLength: 1,
+          description: 'douyin_official_search 返回的资料 ID。',
+        },
+        startChunk: {
+          type: 'number',
+          minimum: 1,
+          description: '从第几个原文切片开始，默认 1。',
+        },
+        chunkLimit: {
+          type: 'number',
+          minimum: 1,
+          maximum: 3,
+          description: '本次读取 1 到 3 个切片，默认 2。',
+        },
+      },
+      required: ['sourceId'],
+      additionalProperties: false,
+    },
+    output: {
+      schema: {
+        type: 'object',
+        additionalProperties: true,
+      },
+      render(_args, value) {
+        return [{
+          type: 'text',
+          text: renderSourceResult(value),
+        }];
+      },
+    },
+    async execute(args) {
+      return readArchiveSource(validateSourceArgs(args));
     },
     isConcurrencySafe() {
       return true;
