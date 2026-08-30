@@ -72,6 +72,16 @@ jobs:
           DSH_NONINTERACTIVE: '1'
           DSH_NPM_REGISTRY: https://registry.npmmirror.com
         run: |
+          $WindowsPowerShell = (Get-Command powershell.exe).Source
           $env:Path = "$env:SystemRoot\System32;$env:SystemRoot"
-          & (Resolve-Path 'installers/windows/install.ps1')
-          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & $WindowsPowerShell -NoLogo -NoProfile -ExecutionPolicy Bypass `
+            -File (Resolve-Path 'installers/windows/install.ps1')
+          $InstallerExitCode = $LASTEXITCODE
+          if ($InstallerExitCode -ne 0) {
+            $InstallLog = Join-Path $env:DSH_CREATOR_RUNTIME_ROOT 'install.log'
+            if (Test-Path $InstallLog) {
+              Write-Host '=== Windows installer log tail ==='
+              Get-Content $InstallLog -Tail 200
+            }
+            exit $InstallerExitCode
+          }
